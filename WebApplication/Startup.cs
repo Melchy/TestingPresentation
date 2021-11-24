@@ -29,7 +29,7 @@ namespace WebApplication
         public void ConfigureServices(
             IServiceCollection services)
         {
-            services.AddTransient<IEmailService, EmailService>();
+            services.AddTransient<EmailService>();
             services.AddTransient<IUserRepository, UserRepository>();
             services.AddTransient<RegisterUserUseCase>();
             services.AddControllers();
