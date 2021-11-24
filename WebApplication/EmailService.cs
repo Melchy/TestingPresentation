@@ -3,12 +3,18 @@ using MimeKit;
 
 namespace WebApplication
 {
-    public class EmailService
+    public interface IEmailService
     {
-        public void SendRegistrationEmail(string reciever){
+        public void SendRegistrationEmail(
+            string receiver);
+    }
+
+    public class EmailService : IEmailService
+    {
+        public void SendRegistrationEmail(string receiver){
             var message = new MimeMessage ();
             message.From.Add (new MailboxAddress ("sender@notino.com"));
-            message.To.Add (new MailboxAddress (reciever));
+            message.To.Add (new MailboxAddress (receiver));
             message.Subject = "...";
             message.Body = new TextPart ("plain") {
                 Text = "...."

@@ -29,7 +29,9 @@ namespace WebApplication
         public void ConfigureServices(
             IServiceCollection services)
         {
-            services.AddTransient<EmailService>();
+            services.AddTransient<IEmailService, EmailService>();
+            services.AddTransient<IUserRepository, UserRepository>();
+            services.AddTransient<RegisterUserUseCase>();
             services.AddControllers();
             services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo {Title = "WebApplication", Version = "v1"}); });
         }

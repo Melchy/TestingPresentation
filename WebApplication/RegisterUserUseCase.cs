@@ -2,12 +2,12 @@
 {
     public class RegisterUserUseCase
     {
-        private readonly EmailService _emailService;
-        private readonly UserRepository _userRepository;
+        private readonly IEmailService _emailService;
+        private readonly IUserRepository _userRepository;
 
         public RegisterUserUseCase(
-            EmailService emailService,
-            UserRepository userRepository)
+            IEmailService emailService,
+            IUserRepository userRepository)
         {
             _emailService = emailService;
             _userRepository = userRepository;
