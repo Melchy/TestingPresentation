@@ -29,6 +29,7 @@ namespace WebApplication
         public void ConfigureServices(
             IServiceCollection services)
         {
+            services.AddTransient<IHumbleSmtpClient, HumbleSmtpClient>();
             services.AddTransient<EmailService>();
             services.AddTransient<IUserRepository, UserRepository>();
             services.AddTransient<RegisterUserUseCase>();
