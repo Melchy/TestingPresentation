@@ -8,6 +8,8 @@ namespace Tests
         public void Test1()
         {
             //TODO tests
+            //For mocking use https://fakeiteasy.github.io/
+            //For assertions use https://fluentassertions.com/
         }
     }
 }
