@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using MailKit.Net.Smtp;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -32,6 +33,7 @@ namespace WebApplication
             services.AddTransient<IHumbleSmtpClient, HumbleSmtpClient>();
             services.AddTransient<EmailService>();
             services.AddTransient<IUserRepository, UserRepository>();
+            services.AddTransient<SmtpClient>();
             services.AddTransient<RegisterUserUseCase>();
             services.AddControllers();
             services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo {Title = "WebApplication", Version = "v1"}); });

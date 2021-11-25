@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System;
+using Microsoft.AspNetCore.Mvc;
 
 namespace WebApplication
 {
@@ -15,7 +16,7 @@ namespace WebApplication
         }
 
         [HttpPost("")]
-        public IActionResult RegisterUser(
+        public virtual IActionResult RegisterUser(
             [FromBody] User user)
         {
             var isSuccessful = _registerUserUseCase.Register(user);
@@ -25,6 +26,12 @@ namespace WebApplication
             }
 
             return BadRequest();
+        }
+
+        [HttpGet("")]
+        public virtual IActionResult Throw()
+        {
+            throw new InvalidOperationException("Error");
         }
     }
 
