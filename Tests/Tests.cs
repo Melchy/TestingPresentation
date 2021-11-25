@@ -39,45 +39,20 @@ namespace Tests
         [Test]
         public async Task UserRegistrationSimple()
         {
+            //TODO use ridge to call controller
+            //https://github.com/Melchy/Ridge
             var webApp = new WebApp();
             var client = webApp.CreateClient();
-            var controllerFactory = new ControllerFactory(client, webApp.Services);
-            var sut = controllerFactory.CreateController<UserController>();
 
             var user = new User("reciever@email.com", "name");
-            var registerUser = sut.RegisterUser(user);
+            var registerUser = await client.PostAsJsonAsync("user", user);
 
-            registerUser.IsSuccessStatusCode().Should().BeTrue();
+            registerUser.IsSuccessStatusCode.Should().BeTrue();
             var smtpClient = webApp.Services.GetRequiredService<SmtpClientMock>();
             smtpClient.Message.To.Single().ToString().Should().Be(user.Email);
             ((TextPart)smtpClient.Message.Body).Text.Should().Be("Body");
             smtpClient.Message.Subject.Should().Be("Subject");
             smtpClient.Message.From.Single().ToString().Should().Be("sender@notino.com");
-        }
-
-        [Test]
-        public async Task ThrowExampleWebApplicationFactory()
-        {
-            var webApp = new WebApp();
-            var client = webApp.CreateClient();
-
-            var registerUser = await client.GetAsync("");
-
-            registerUser.IsSuccessStatusCode.Should().BeTrue();
-        }
-
-
-        [Test]
-        public async Task ThrowExampleRidge()
-        {
-            var webApp = new WebApp();
-            var client = webApp.CreateClient();
-            var controllerFactory = new ControllerFactory(client, webApp.Services, new NunitLogWriter());
-            var sut = controllerFactory.CreateController<UserController>();
-
-            var result = sut.Throw();
-
-            result.IsSuccessStatusCode().Should().BeTrue();
         }
     }
 
