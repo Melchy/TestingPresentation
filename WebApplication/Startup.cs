@@ -29,10 +29,8 @@ namespace WebApplication
         public void ConfigureServices(
             IServiceCollection services)
         {
-            services.AddTransient<IHumbleSmtpClient, HumbleSmtpClient>();
-            services.AddTransient<EmailService>();
-            services.AddTransient<IUserRepository, UserRepository>();
-            services.AddTransient<RegisterUserUseCase>();
+            services.AddTransient<UserRepository>();
+            services.AddTransient<BuyItemUseCase>();
             services.AddControllers();
             services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo {Title = "WebApplication", Version = "v1"}); });
         }

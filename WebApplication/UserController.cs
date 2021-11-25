@@ -1,34 +1,50 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 
 namespace WebApplication
 {
     [ApiController]
     [Route("[controller]")]
-    public class UserController : ControllerBase
+    public class CartController : ControllerBase
     {
-        private readonly RegisterUserUseCase _registerUserUseCase;
+        private readonly BuyItemUseCase _buyItemUseCase;
 
-        public UserController(
-            RegisterUserUseCase registerUserUseCase)
+        public CartController(
+            BuyItemUseCase buyItemUseCase)
         {
-            _registerUserUseCase = registerUserUseCase;
+            _buyItemUseCase = buyItemUseCase;
         }
 
-        [HttpPost("")]
-        public IActionResult RegisterUser(
-            [FromBody] User user)
+        [HttpPost("{userId:guid}/{itemId:guid}")]
+        public async Task<IActionResult> RegisterUser(
+            [FromRoute] Guid userId,
+            [FromRoute] Guid itemId)
         {
-            var isSuccessful = _registerUserUseCase.Register(user);
-            if (isSuccessful)
-            {
-                return Ok();
-            }
-
-            return BadRequest();
+            await _buyItemUseCase.Buy(userId, itemId);
+            return Ok();
         }
     }
 
     public record User(
         string Email,
-        string Name);
+        string Name,
+        UserType UserType,
+        int UserAge,
+        Gender Gender);
+
+    public enum Gender
+    {
+        Male = 1,
+        Female = 2,
+        Cis = 3,
+        Fluid = 4,
+    }
+
+    public enum UserType
+    {
+        PremiumUser = 1,
+        RegularUser = 2,
+        CompanyClient = 3,
+    }
 }

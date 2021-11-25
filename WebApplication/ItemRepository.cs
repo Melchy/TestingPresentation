@@ -2,10 +2,9 @@
 
 namespace WebApplication
 {
-    public class UserRepository
+    public class ItemRepository
     {
-        public User GetUser(
-            Guid userId)
+        public Item GetItem()
         {
             throw new NotImplementedException();
         }

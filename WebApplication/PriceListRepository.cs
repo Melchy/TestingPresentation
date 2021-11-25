@@ -2,10 +2,10 @@
 
 namespace WebApplication
 {
-    public class UserRepository
+    public class PriceListRepository
     {
-        public User GetUser(
-            Guid userId)
+        public PriceList GetPriceListForItem(
+            Guid itemId)
         {
             throw new NotImplementedException();
         }
