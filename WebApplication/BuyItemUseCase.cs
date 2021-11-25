@@ -9,6 +9,7 @@ namespace WebApplication
         private readonly ItemRepository _itemRepository;
         private readonly PriceListRepository _priceListRepository;
         private readonly CheckoutService _checkoutService;
+        private readonly PriceCalculator _priceCalculator;
 
         public BuyItemUseCase(
             UserRepository userRepository,
@@ -20,6 +21,7 @@ namespace WebApplication
             _itemRepository = itemRepository;
             _priceListRepository = priceListRepository;
             _checkoutService = checkoutService;
+            _priceCalculator = new PriceCalculator();
         }
 
         public async Task Buy(
@@ -27,41 +29,10 @@ namespace WebApplication
             Guid itemId)
         {
             var user = _userRepository.GetUser(userId);
-
-            if (user.Gender == Gender.Male)
-            {
-                throw new InvalidOperationException("Males can not buy item.");
-            }
-
             var item = _itemRepository.GetItem();
-            var hasSale = user.Gender == Gender.Fluid || user.Gender == Gender.Cis;
-
-            if (!hasSale)
-            {
-                if (user.UserType == UserType.PremiumUser)
-                {
-                    var priceList = _priceListRepository.GetPriceListForItem(itemId);
-                    await _checkoutService.CheckoutItem(itemId, priceList.PremiumPrice);
-                    return;
-                }
-
-                await _checkoutService.CheckoutItem(item.Id, item.Price);
-            }
-            else
-            {
-                var priceList = _priceListRepository.GetPriceListForItem(itemId);
-                Decimal resultPrice;
-                if (user.UserType == UserType.PremiumUser)
-                {
-                    resultPrice = priceList.SaleAndPremiumPrice;
-                }
-                else
-                {
-                    resultPrice = priceList.SalePrice;
-                }
-
-                await _checkoutService.CheckoutItem(itemId, resultPrice);
-            }
+            var priceList = _priceListRepository.GetPriceListForItem(itemId);
+            var resultPrice = _priceCalculator.GetPriceWithSales(user.Gender, user.UserType, priceList, item.Price);
+            await _checkoutService.CheckoutItem(item.Id, resultPrice);
         }
     }
 
