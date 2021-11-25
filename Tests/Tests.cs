@@ -16,6 +16,7 @@ namespace Tests
         public void UserRegistrationSimple()
         {
             //TODO use webApplicationFactory https://docs.microsoft.com/cs-cz/dotnet/api/microsoft.aspnetcore.mvc.testing.webapplicationfactory-1?view=aspnetcore-6.0
+            //Nuget package  Microsoft.AspNetCore.Mvc.Testing
             var smtpClient = new SmtpClientMock();
             var userRepository = A.Fake<IUserRepository>();
             var user = new User("reciever@email.com", "name");
