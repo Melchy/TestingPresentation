@@ -10,6 +10,7 @@ namespace Tests
         [Test]
         public void UserRegistrationSimple()
         {
+            // TODO use humble class to mock SmtpServer
             var emailService = A.Fake<IEmailService>();
             var userRepository = A.Fake<IUserRepository>();
 
