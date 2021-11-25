@@ -10,5 +10,12 @@ using WebApplication;
 
 namespace Tests
 {
-
+    public class Test
+    {
+        [Test]
+        public void PureTest()
+        {
+            //TODO extract logic from BuyItemUseCase.Buy and write one test for newly extracted logic
+        }
+    }
 }
