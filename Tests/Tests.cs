@@ -1,9 +1,12 @@
-using System;
 using System.Linq;
+using System.Net.Http.Json;
 using System.Threading;
+using System.Threading.Tasks;
 using FakeItEasy;
 using FluentAssertions;
 using MailKit;
+using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.Extensions.DependencyInjection;
 using MimeKit;
 using NUnit.Framework;
 using WebApplication;
@@ -13,22 +16,25 @@ namespace Tests
     public class Tests
     {
         [Test]
-        public void UserRegistrationSimple()
+        public async Task UserRegistrationSimple()
         {
-            //TODO use webApplicationFactory https://docs.microsoft.com/cs-cz/dotnet/api/microsoft.aspnetcore.mvc.testing.webapplicationfactory-1?view=aspnetcore-6.0
-            var smtpClient = new SmtpClientMock();
+            var application = new WebApplicationFactory<Program>();
             var userRepository = A.Fake<IUserRepository>();
-            var user = new User("reciever@email.com", "name");
+            var smtpClientMock = new SmtpClientMock();
+            application = application
+               .WithWebHostBuilder(builder =>
+                {
+                    builder.ConfigureServices(x => x.AddTransient<IHumbleSmtpClient, SmtpClientMock>(x => smtpClientMock));
+                    builder.ConfigureServices(x => x.AddTransient(x => userRepository));
+                });
+            var client = application.CreateClient();
+            var result = await client.PostAsJsonAsync("/User", new User("reciever@email.com", "name"));
 
-            var emailService = new EmailService(smtpClient);
-            var sut = new RegisterUserUseCase(emailService, userRepository);
-            var registrationSuccessful = sut.Register(user);
-
-            registrationSuccessful.Should().BeTrue();
-            smtpClient.Message.To.Single().ToString().Should().Be(user.Email);
-            ((TextPart)smtpClient.Message.Body).Text.Should().Be("Body");
-            smtpClient.Message.Subject.Should().Be("Subject");
-            smtpClient.Message.From.Single().ToString().Should().Be("sender@notino.com");
+            result.EnsureSuccessStatusCode();
+            smtpClientMock.Message.To.Single().ToString().Should().Be("reciever@email.com");
+            ((TextPart)smtpClientMock.Message.Body).Text.Should().Be("Body");
+            smtpClientMock.Message.Subject.Should().Be("Subject");
+            smtpClientMock.Message.From.Single().ToString().Should().Be("sender@notino.com");
         }
     }
 
